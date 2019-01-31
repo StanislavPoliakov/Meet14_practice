@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 public class OuterAdapter extends RecyclerView.Adapter<OuterAdapter.OuterHolder> {
-    private InnerAdapter adapter;
+    //private InnerAdapter adapter;
     private List<List<Bitmap>> mCollection;
     private Context context;
 
@@ -30,7 +30,7 @@ public class OuterAdapter extends RecyclerView.Adapter<OuterAdapter.OuterHolder>
 
     @Override
     public void onBindViewHolder(@NonNull OuterHolder holder, int position) {
-        adapter = new InnerAdapter(mCollection.get(position), position);
+        InnerAdapter adapter = new InnerAdapter(mCollection.get(position), position);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         holder.innerRecyclerView.setAdapter(adapter);
         holder.innerRecyclerView.setLayoutManager(layoutManager);

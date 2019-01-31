@@ -32,9 +32,9 @@ public class NetworkData {
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             int responseCode = connection.getResponseCode();
-            Log.d(TAG, "connection response code = " + responseCode);
+            //Log.d(TAG, "connection response code = " + responseCode);
             if (responseCode == 200) {
-                Log.d(TAG, "getBitmapThroughHttpUrlConnection: ");
+                //Log.d(TAG, "getBitmapThroughHttpUrlConnection: ");
                 return  BitmapFactory.decodeStream(connection.getInputStream());
             } else return null;
         } catch (IOException ex) {

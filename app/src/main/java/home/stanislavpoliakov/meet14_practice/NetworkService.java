@@ -52,10 +52,9 @@ public class NetworkService extends Service {
         List<List<Bitmap>> bitmapCollection = Collections.synchronizedList(new ArrayList<>());
         try {
             bitmapCollection.add(pool.submit(this::getSnakes).get());
-            bitmapCollection.add(pool.submit(this::getSnakes).get());
-            //bitmapCollection.add(new ArrayList<>(5));
-            //bitmapCollection.add(pool.submit(this::getBirds).get());
-            //bitmapCollection.add(run);
+            bitmapCollection.add(pool.submit(this::getBirds).get());
+            bitmapCollection.add(pool.submit(this::getFishes).get());
+            bitmapCollection.add(pool.submit(this::getFlies).get());
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         } catch (ExecutionException ex) {
@@ -67,6 +66,28 @@ public class NetworkService extends Service {
 
     private List<Bitmap> getSnakes() {
         return snakes.stream()
+                .map(this::stringToUrl)
+                .map(NetworkData::getBitmapThroughHttpUrlConnection)
+                .collect(toList());
+    }
+
+    private List<Bitmap> getBirds() {
+        return new ArrayList<>(birds.size());
+        /*return birds.stream()
+                .map(this::stringToUrl)
+                .map(NetworkData::getBitmapThroughHttpUrlConnection)
+                .collect(toList());*/
+    }
+
+    private List<Bitmap> getFishes() {
+        return fishes.stream()
+                .map(this::stringToUrl)
+                .map(NetworkData::getBitmapThroughHttpUrlConnection)
+                .collect(toList());
+    }
+
+    private List<Bitmap> getFlies() {
+        return flies.stream()
                 .map(this::stringToUrl)
                 .map(NetworkData::getBitmapThroughHttpUrlConnection)
                 .collect(toList());

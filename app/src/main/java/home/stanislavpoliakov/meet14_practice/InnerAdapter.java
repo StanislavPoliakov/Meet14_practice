@@ -21,17 +21,23 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerHolder>
     private int type;
     private List<String> birds;
 
+    @Override
+    public void onViewRecycled(@NonNull InnerHolder holder) {
+
+    }
+
     public InnerAdapter(List<Bitmap> imageList, int type) {
         this.imageList = imageList;
         this.type = type;
-        Log.d(TAG, "InnerAdapter: type = " + type);
-
-        birds = new ArrayList<>();
-        birds.add("https://cs8.pikabu.ru/post_img/2018/01/24/12/1516824577158446456.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824554130874306.jpg");
-        birds.add("https://cs9.pikabu.ru/post_img/big/2018/01/24/12/1516824599162057167.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824642196914067.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824661115498228.jpg");
+        if (type == 1) {
+            birds = new ArrayList<>();
+            birds.add("https://cs8.pikabu.ru/post_img/2018/01/24/12/1516824577158446456.jpg");
+            birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824554130874306.jpg");
+            birds.add("https://cs9.pikabu.ru/post_img/big/2018/01/24/12/1516824599162057167.jpg");
+            birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824642196914067.jpg");
+            birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824661115498228.jpg");
+            //imageList = new ArrayList<>(birds.size());
+        }
     }
 
     @NonNull
@@ -44,18 +50,14 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerHolder>
     @Override
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         if (type == 1) {
-            Log.d(TAG, "onBindViewHolder: ");
             Picasso.get().load(birds.get(position)).into(holder.imageView);
-        } else {
-            holder.imageView.setImageBitmap(imageList.get(position));
-        }
+        } else holder.imageView.setImageBitmap(imageList.get(position));
     }
-
-
 
     @Override
     public int getItemCount() {
-        return imageList.size();
+        if (type == 1) return birds.size();
+        else return imageList.size();
     }
 
     public class InnerHolder extends RecyclerView.ViewHolder {
