@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private NetworkService mService;
     private WorkThread workThread = new WorkThread();
     private static final String TAG = "meet14_logs";
-    private List<String> birds;
 
     private class WorkThread extends HandlerThread {
         private static final int FETCH_BITMAP_DATA = 1;
@@ -73,25 +72,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private List<Bitmap> getBirds() {
-        List<Bitmap> result = new ArrayList<>();
-
-    return null;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         workThread.start();
-
-        birds = new ArrayList<>();
-        birds.add("https://cs8.pikabu.ru/post_img/2018/01/24/12/1516824577158446456.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824554130874306.jpg");
-        birds.add("https://cs9.pikabu.ru/post_img/big/2018/01/24/12/1516824599162057167.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824642196914067.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824661115498228.jpg");
     }
 
     @Override

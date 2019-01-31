@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
@@ -63,5 +65,9 @@ public class NetworkData {
         });
         Log.d(TAG, "getBitmapThroughPicasso: result = " + result.size());
         return null;
+    }
+
+    public static FutureTarget<Bitmap> getBitmapThroughGlide(Context context, String url) {
+        return Glide.with(context).asBitmap().load(url).submit();
     }
 }

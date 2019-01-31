@@ -10,6 +10,9 @@ import android.os.IBinder;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ public class NetworkService extends Service {
         try {
             bitmapCollection.add(pool.submit(this::getSnakes).get());
             bitmapCollection.add(pool.submit(this::getBirds).get());
+            //bitmapCollection.add();
             bitmapCollection.add(pool.submit(this::getFishes).get());
             bitmapCollection.add(pool.submit(this::getFlies).get());
         } catch (InterruptedException ex) {
@@ -79,11 +83,21 @@ public class NetworkService extends Service {
                 .collect(toList());*/
     }
 
-    private List<Bitmap> getFishes() {
-        return fishes.stream()
+    private List<Bitmap> getFishes() throws InterruptedException, ExecutionException {
+        return new ArrayList<>(fishes.size());
+        /*return fishes.stream()
                 .map(this::stringToUrl)
                 .map(NetworkData::getBitmapThroughHttpUrlConnection)
-                .collect(toList());
+                .collect(toList());*/
+        /*try {
+            return fishes.stream()
+                    .map(e -> Glide.with(getApplicationContext()).asBitmap().load(e).submit().get()
+                    .collect(toList());
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        } catch (ExecutionException ex) {
+            ex.printStackTrace();
+        }*/
     }
 
     private List<Bitmap> getFlies() {

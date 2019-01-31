@@ -30,7 +30,7 @@ public class OuterAdapter extends RecyclerView.Adapter<OuterAdapter.OuterHolder>
 
     @Override
     public void onBindViewHolder(@NonNull OuterHolder holder, int position) {
-        InnerAdapter adapter = new InnerAdapter(mCollection.get(position), position);
+        InnerAdapter adapter = new InnerAdapter(context, mCollection.get(position), position);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         holder.innerRecyclerView.setAdapter(adapter);
         holder.innerRecyclerView.setLayoutManager(layoutManager);
