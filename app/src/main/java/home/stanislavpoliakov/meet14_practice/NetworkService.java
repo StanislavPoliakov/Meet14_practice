@@ -81,13 +81,13 @@ public class NetworkService extends Service {
     }
 
     /**
-     * Потоком (stream) закидывем данные в pool-thread. Используем вспомогательный статичный метод
+     * Раскидываем поток по Thread'-ам (ForkJoinPool). Используем вспомогательный статичный метод
      * для  HttpUrlConnection. Вообще, я думал, что там будут методы для всех вариантов загрузки...
      * Наивный дурачок ))
      * @return
      */
     private List<Bitmap> getSnakes() {
-        return snakes.stream()
+        return snakes.parallelStream()
                 .map(this::stringToUrl)
                 .map(NetworkData::getBitmapThroughHttpUrlConnection)
                 .collect(toList());
@@ -168,6 +168,7 @@ public class NetworkService extends Service {
     private URL stringToUrl(String value) {
         URL url = null;
         try {
+            Log.d(TAG, "stringToUrl: Thread = " + Thread.currentThread());
             url = new URL(value);
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
