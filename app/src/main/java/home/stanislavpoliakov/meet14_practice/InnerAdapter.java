@@ -12,6 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.DraweeView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,7 +26,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerHolder>
     private static final String TAG = "meet14_logs";
     private List<Bitmap> imageList;
     private int type;
-    private List<String> birds, fishes;
+    private List<String> birds, fishes, flies;
     private Context context;
 
     @Override
@@ -47,6 +52,14 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerHolder>
             fishes.add("https://uznayvse.ru/images/stories/uzn_1401834378.jpeg");
             fishes.add("https://decem.info/wp-content/uploads/Ryba-kloun.jpg");
             fishes.add("https://decem.info/wp-content/uploads/Mandarinka.jpg");
+        } else if (type == 3) {
+            flies = new ArrayList<>();
+            flies.add("http://printonic.ru/uploads/images/2016/03/14/img_56e660f581895.jpg");
+            flies.add("https://cdn.fishki.net/upload/post/201507/23/1605583/10_3.jpg");
+            flies.add("https://cdn.fishki.net/upload/post/201507/23/1605583/7_8.jpg");
+            flies.add("https://cdn.fishki.net/upload/post/201507/23/1605583/3_14.jpg");
+            flies.add("https://cdn.fishki.net/upload/post/201507/23/1605583/3_15.jpg");
+            flies.add("https://cdn.fishki.net/upload/post/201507/23/1605583/1_20.jpg");
         }
     }
 
@@ -60,25 +73,37 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerHolder>
     @Override
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         if (type == 1) {
-            Picasso.get().load(birds.get(position)).into(holder.imageView);
+            Picasso.get().load(birds.get(position)).fit().into(holder.imageView);
         } else if (type == 2) {
-            Glide.with(context).load(fishes.get(position)).into(holder.imageView);
-        } else holder.imageView.setImageBitmap(imageList.get(position));
+            RequestOptions options = new RequestOptions()
+                    .centerCrop();
+            Glide.with(context).load(fishes.get(position)).apply(options).into(holder.imageView);
+        } else if (type == 3) {
+            holder.imageView.setVisibility(View.GONE);
+            holder.frescoView.setVisibility(View.VISIBLE);
+            holder.frescoView.setImageURI(flies.get(position));
+        } else {
+            holder.imageView.setImageBitmap(imageList.get(position));
+            holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
     }
 
     @Override
     public int getItemCount() {
         if (type == 1) return birds.size();
         else if (type == 2) return fishes.size();
+        else if (type == 3) return flies.size();
         else return imageList.size();
     }
 
     public class InnerHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
+        public SimpleDraweeView frescoView;
 
         public InnerHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
+            frescoView = itemView.findViewById(R.id.frescoView);
         }
     }
 }

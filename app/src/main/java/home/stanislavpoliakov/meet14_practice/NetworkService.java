@@ -101,17 +101,18 @@ public class NetworkService extends Service {
     }
 
     private List<Bitmap> getFlies() {
-        return flies.stream()
+        return new ArrayList<>(flies.size());
+        /*return flies.stream()
                 .map(this::stringToUrl)
                 .map(NetworkData::getBitmapThroughHttpUrlConnection)
                 .collect(toList());
-    }
+    }*/
 
     /*private Bitmap getBirds() {
         return birds.stream()
                 .map(NetworkData::getBitmapThroughPicasso)
-                .collect(toList());
-    }*/
+                .collect(toList());*/
+    }
 
     private void initResources() {
 
