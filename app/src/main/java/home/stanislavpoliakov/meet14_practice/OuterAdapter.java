@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+/**
+ * Класс внешнего, вертикального, адаптера
+ */
 public class OuterAdapter extends RecyclerView.Adapter<OuterAdapter.OuterHolder> {
-    //private InnerAdapter adapter;
     private List<List<Bitmap>> mCollection;
     private Context context;
 
@@ -28,6 +30,11 @@ public class OuterAdapter extends RecyclerView.Adapter<OuterAdapter.OuterHolder>
         return new OuterHolder(view);
     }
 
+    /**
+     * В момент привязки иницииализируем горизонатальный RecyclerView
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull OuterHolder holder, int position) {
         InnerAdapter adapter = new InnerAdapter(context, mCollection.get(position), position);
