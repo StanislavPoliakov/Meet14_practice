@@ -8,6 +8,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Process;
+import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,11 +29,17 @@ public class MainActivity extends AppCompatActivity {
     private NetworkService mService;
     private WorkThread workThread = new WorkThread();
     private static final String TAG = "meet14_logs";
-    private List<String> birds;
 
+    /**
+     * Создаем workThread на основе ThreadHandler. Обоснование такое: нам нужно создать рабочий
+     * поток, который будет общаться с сервисом, внутри сервиса запускать отдельные потоки, и при
+     * этом должен сообщать UI-компоненту (RecyclerView), что данные готовы к отрисовке. Сервис выбран
+     * исходя из предположения, что нам нужно сохранить возможность загрузки данных, даже если
+     * пользователь свернул приложение.
+     */
     private class WorkThread extends HandlerThread {
         private static final int FETCH_BITMAP_DATA = 1;
-        private Handler mHandler;
+        private Handler mHandler; // Приватный хэндлер, да-да!
 
         @Override
         protected void onLooperPrepared() {
@@ -40,27 +48,38 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
-                        case FETCH_BITMAP_DATA:
-                            NetworkData.context = getApplicationContext();
-                            bitmapCollection = mService.getCollection();
 
-                            Log.d(TAG, "handleMessage: size = " + bitmapCollection.size());
+                        // Просим сервис загрузить данные. По окончанию загрузки - обновляем RecyclerView
+                        case FETCH_BITMAP_DATA:
+                            bitmapCollection = mService.getCollection();
                             initRecyclerView();
                     }
                 }
             };
         }
 
+        /**
+         * Конструктор. Приоритет понижен до фоновой задачи
+         */
         public WorkThread() {
             super("WorkThread", Process.THREAD_PRIORITY_BACKGROUND);
         }
 
+        /**
+         * Метод, который светит наружу, и который мы и запускаем для начала работы
+         */
         public void setCollection() {
             mHandler.sendEmptyMessage(FETCH_BITMAP_DATA);
         }
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        /**
+         * Запускаем загрузку после того, как получили connect с сервисом
+         * @param name
+         * @param service
+         */
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mService = ((NetworkService.NetworkServiceBinder) service).getService();
@@ -73,25 +92,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private List<Bitmap> getBirds() {
-        List<Bitmap> result = new ArrayList<>();
-
-    return null;
-    }
-
+    /**
+     * Из допов - инициализируем Fresco и запускаем workThread
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Fresco.initialize(this);
         workThread.start();
-
-        birds = new ArrayList<>();
-        birds.add("https://cs8.pikabu.ru/post_img/2018/01/24/12/1516824577158446456.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824554130874306.jpg");
-        birds.add("https://cs9.pikabu.ru/post_img/big/2018/01/24/12/1516824599162057167.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824642196914067.jpg");
-        birds.add("https://cs10.pikabu.ru/post_img/big/2018/01/24/12/1516824661115498228.jpg");
     }
 
     @Override
@@ -106,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         unbindService(serviceConnection);
     }
 
+    @UiThread
     private void initRecyclerView() {
         runOnUiThread(() -> {
             RecyclerView outer = findViewById(R.id.outerRecyclerView);
